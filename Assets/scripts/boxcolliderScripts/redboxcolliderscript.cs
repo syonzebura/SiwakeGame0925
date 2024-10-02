@@ -36,6 +36,9 @@ public class redboxcolliderscript : MonoBehaviour
     //箱が壊れるかどうか（破壊確定後に点数が増えないようにする）
     private bool boxBreakbool = false;
 
+    //ゲームマネージャーを取得
+    [SerializeField] private GameObject gamemanager;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -58,35 +61,39 @@ public class redboxcolliderscript : MonoBehaviour
     //オブジェクトぶつかった際にテキスト変更
     private void OnTriggerEnter(Collider other)
     {
-        if (boxBreakbool == false && this.Maxitem >=this.allItems)
+        if(this.gamemanager.GetComponent<GameManager>().GameSceneNumber == 1)
         {
-            if (other.gameObject.tag == $"{colorTagName}")
+            if (boxBreakbool == false && this.Maxitem >= this.allItems)
             {
-                this.allItems += 1;
-                StartCoroutine("nowItemCountAnimation");
-                this.nowItemCount += 1;
-                
+                if (other.gameObject.tag == $"{colorTagName}")
+                {
+                    this.allItems += 1;
+                    StartCoroutine("nowItemCountAnimation");
+                    this.nowItemCount += 1;
 
+
+                }
+                else if (other.gameObject.tag == "Untagged")
+                {
+                    //何も起こさない
+                }
+                else
+                {
+                    this.allItems += 1;
+
+                    this.clearItemCount += 1;
+                    this.clearredtext.transform.DOShakePosition(duration: 1f, strength: 10f);
+                    //Destroy(other.gameObject);
+                }
             }
-            else if(other.gameObject.tag == "Untagged")
+            //限界までアイテム入った時の表示
+            else if (this.Maxitem <= this.allItems)
             {
-                //何も起こさない
-            }
-            else
-            {
-                this.allItems += 1;
-                
-                this.clearItemCount += 1;
-                this.clearredtext.transform.DOShakePosition(duration: 1f, strength: 10f);
-                //Destroy(other.gameObject);
+                this.nowItemCount = 0;
+                this.clearItemCount = 99;
             }
         }
-        //限界までアイテム入った時の表示
-        else if(this.Maxitem <= this.allItems)
-        {
-            this.nowItemCount = 0;
-            this.clearItemCount = 99;
-        }
+        
         
         
 
@@ -111,6 +118,7 @@ public class redboxcolliderscript : MonoBehaviour
 
             //破壊時エフェクト。Instantiateの参照位置は親boxの原点がズレているため分子テキストの位置を代わりに参照
             Instantiate(this.breakeffectobj, this.nowredtext.transform.position, Quaternion.identity);
+            this.gamemanager.GetComponent<GameManager>().BoxBreak();
             Destroy(this.boxgameobject);
         }
     }

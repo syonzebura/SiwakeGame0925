@@ -9,6 +9,8 @@ public class ItemGanarater : MonoBehaviour
     private bool ganarateflag = false;
     //降ってくるアイテムを格納、nextControllerと対応させたい
     public GameObject[] items;
+    //ゲームマネージャーを取得
+    [SerializeField] private GameObject gamemanager;
 
     // Start is called before the first frame update
     void Start()
@@ -19,7 +21,8 @@ public class ItemGanarater : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (this.ganarateflag == false)
+        if (this.ganarateflag == false&&
+            this.gamemanager.GetComponent<GameManager>().GameSceneNumber == 1)
         {
             StartCoroutine("waitGanaratetime");
         }

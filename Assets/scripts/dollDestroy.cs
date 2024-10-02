@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class dollDestroy : MonoBehaviour
 {
+    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -18,6 +20,7 @@ public class dollDestroy : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+        
     }
     
     
